@@ -1,7 +1,12 @@
-﻿namespace Projekt_626_2023_Menu
+﻿using System.Media;
+
+namespace Projekt_626_2023_Menu
 {
     public class Menu
     {
+        public bool Playerstoped { get; set; } = false;
+        public bool LastState { get; set; } = false;
+        public SoundPlayer SoundPlayer { get; set; } = new SoundPlayer(Environment.CurrentDirectory + @"\Music\neon-gaming.wav");
         int index = 0;
         ConsoleKeyInfo lastKeyPressed;
         List<string> items;
@@ -12,6 +17,7 @@
 
         public Menu(List<string> items, ConsoleColor menuColor = ConsoleColor.DarkRed)
         {
+            SoundPlayer.PlayLooping();
             Console.CursorVisible = false;
             this.items = items;
             this.menuColor = menuColor;
@@ -69,15 +75,22 @@
                             index--;
                         else
                             index = items.Count - 1;
+                        Playerstoped = false;
                         break;
                     case ConsoleKey.DownArrow:
                         if (index < items.Count - 1)
                             index++;
                         else
                             index = 0;
+                        Playerstoped = false;
                         break;
                     default:
                         break;
+                }
+                if (!Playerstoped && LastState)
+                {
+                    SoundPlayer.PlayLooping();
+                    LastState = false;
                 }
                 // for resising af vinduet
                 if (x_akse != Console.WindowWidth || y_akse != Console.WindowHeight)
